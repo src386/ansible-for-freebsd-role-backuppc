@@ -1,0 +1,69 @@
+---
+
+- name: Add options into {{ backuppc__confdir }}/update.sh (FreeBSD)
+  template:
+    src: freebsd/update.sh.j2
+    dest: '{{ backuppc__confdir }}/update.sh'
+    owner: '{{ backuppc__owner }}'
+    group: '{{ backuppc__group }}'
+    mode: u=rwx,g=rx,o=rx
+
+# update.sh will not work if backuppc is running.
+# So it's easier to ignore this step if config.pl exists rather than dealing with exit codes.
+- name: Generate default {{ backuppc__confdir }}/config.pl if missing (FreeBSD)
+  shell: '{{ backuppc__confdir }}/update.sh'
+  args:
+    creates: '{{ backuppc__confdir }}/config.pl'
+  tags:
+    - skip_ansible_lint
+
+- name: Install apache configuration for BackupPC
+  template:
+    src: 'freebsd/backuppc.conf.j2'
+    dest: '{{ backuppc__apache24_confdir }}/Includes/backuppc.conf'
+    owner: '{{ backuppc__apache24_owner }}'
+    group: '{{ backuppc__apache24_group }}'
+    mode: u=rw,g=r,o=r
+  notify:
+    - reload apache24
+
+- name: Set apache listen port for BackupPC
+  lineinfile:
+    path: '{{ backuppc__apache24_confdir }}/httpd.conf'
+    regexp: '^Listen '
+    insertafter: '^#Listen '
+    line: 'Listen {{ backuppc__apache24_listen }}'
+  notify:
+    - reload apache24
+
+- name: Check if backuppc__htpasswd is defined
+  assert:
+    that:
+      - backuppc__htpasswd is defined
+    fail_msg: 'Please define backuppc__htpasswd dictionnary. See README.md'
+    success_msg: 'backuppc__htpasswd is defined'
+
+- name: Generate htpasswd file
+  htpasswd:
+    name: '{{ item.name }}'
+    password: '{{ item.password }}'
+    path: '{{ backuppc__confdir }}/htpasswd'
+    owner: www
+    group: wheel
+    mode: u=rx,g=r,o=
+  with_items:
+    - '{{ backuppc__htpasswd }}'
+  notify:
+    - reload apache24
+
+- name: Ensure apache24 is enabled and started
+  service:
+    name: '{{ backuppc__apache24_service }}'
+    enabled: true
+    state: started
+
+- name: Ensure BackupPc Service is Enabled and Started
+  service:
+    name: '{{ backuppc__service }}'
+    enabled: true
+    state: started

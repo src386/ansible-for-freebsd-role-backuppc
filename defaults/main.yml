@@ -1,0 +1,7 @@
+---
+
+# Configuration
+# -------------
+
+# BackupPC http port (FreeBSD only)
+backuppc__apache24_listen: 3000

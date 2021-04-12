@@ -1,0 +1,59 @@
+---
+
+# Installation
+# ============
+
+# Packages to install BackupPC and its dependencies
+backuppc__packages:
+  - ap24-mod_scgi
+  - apache24
+  - backuppc4
+  - par2cmdline
+  - p5-Compress-Raw-Zlib
+  - p5-File-RsyncP
+  - p5-SCGI
+  - p5-XML-RSS
+  - py36-passlib
+  - rrdtool
+  - rsync
+  - rsync-bpc
+  - samba48
+
+# Service
+# =======
+
+# BackupPC service name.
+backuppc__service: backuppc
+
+# BackupPC file permissions (user).
+backuppc__owner: root
+
+# BackupPC file permissions (group).
+backuppc__group: wheel
+
+# Apache24 service.
+backuppc__apache24_service: apache24
+
+# Apache24 vhost  file permissions (user).
+backuppc__apache24_owner: root
+
+# Apache24 vhost file permissions (user).
+backuppc__apache24_group: whell
+
+# Configuration
+# =============
+
+# BackupPC conf directory
+backuppc__confdir: '/usr/local/etc/backuppc'
+
+# Prefered methode to backup/restore
+backuppc__XferMethod: rsync
+
+# SCGIServerPort for the WebUI
+backuppc__SCGIServerPort: 10268
+
+# Backuppc images dir
+backuppc__imgurl: '/backuppc/images'
+
+# Apache24 config dir
+backuppc__apache24_confdir: '/usr/local/etc/apache24'

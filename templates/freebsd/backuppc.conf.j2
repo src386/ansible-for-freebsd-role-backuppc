@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+
+  LoadModule  scgi_module libexec/apache24/mod_scgi.so
+  SCGIMount   /backuppc 127.0.0.1:{{ backuppc__SCGIServerPort }}
+  Alias       /backuppc/images /usr/local/www/backuppc/
+  ErrorLog    /var/log/apache24_error.log
+
+  <Location "/backuppc">
+    AuthUserFile "{{ backuppc__confdir }}/htpasswd"
+    AuthType Basic
+    AuthName "BackupPC admin"
+    Require valid-user
+  </Location>
+
+  <Directory /usr/local/www/backuppc/>
+    Require all granted
+  </Directory>

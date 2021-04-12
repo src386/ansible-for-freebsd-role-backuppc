@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# {{ ansible_managed }}
+
+PERL5LIB=/usr/local/lib; export PERL5LIB
+
+perl /usr/local/libexec/backuppc/configure.pl \
+    --config-only \
+    --bin-path perl=/usr/local/bin/perl \
+    --config-dir {{ backuppc__confdir }} \
+    --cgi-dir /usr/local/www/cgi-bin \
+    --data-dir /var/db/BackupPC \
+    --fhs \
+    --html-dir /usr/local/www/backuppc \
+    --html-dir-url /backuppc \
+    --install-dir /usr/local \
+    --log-dir /var/log/BackupPC \
+    --config-override XferMethod={{ backuppc__XferMethod }} \
+    --config-override SCGIServerPort={{ backuppc__SCGIServerPort }} \
+    --config-override CgiImageDirURL=\'{{ backuppc__imgurl }}\' \
+    --config-override CgiAdminUsers=\'\*\' \
+    --batch

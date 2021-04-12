@@ -1,0 +1,6 @@
+---
+
+- name: reload apache24
+  service:
+    name: '{{ backuppc__apache24_service }}'
+    state: reloaded
