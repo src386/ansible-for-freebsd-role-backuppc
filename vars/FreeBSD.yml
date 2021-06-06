@@ -17,7 +17,7 @@ backuppc__packages:
   - rrdtool
   - rsync
   - rsync-bpc
-  - samba48
+  - samba413
 
 # Service
 # =======
